@@ -124,6 +124,7 @@
 #include <linux/sysfs.h>
 #include <linux/cpufreq_hardlimit.h>
 #include <linux/cpufreq.h>
+#include <soc/qcom/cpufreq.h>
 #ifdef CONFIG_POWERSUSPEND
 #include <linux/powersuspend.h>
 #endif
