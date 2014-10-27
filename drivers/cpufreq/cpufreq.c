@@ -538,8 +538,6 @@ store_one(scaling_min_freq, min);
 
 #endif
 
-/* CPU Hardlimit - Enforce userspace dvfs lock */
-#ifdef CONFIG_CPUFREQ_HARDLIMIT
 static ssize_t store_scaling_max_freq
 (struct cpufreq_policy *policy, const char *buf, size_t count)
 {
@@ -561,6 +559,14 @@ static ssize_t store_scaling_max_freq
 	ret = sscanf(buf, "%u", &new_policy.max);
 	if (ret != 1)
 		return -EINVAL;
+    
+    // restart thermal-engine when something else changes maxfreq
+//    if (strcmp(current->comm, "thermal-engine")) {
+//        struct task_struct *tsk;
+//        for_each_process(tsk)
+//        if (!strcmp(tsk->comm,"thermal-engine")) send_sig(SIGKILL, tsk, 0);
+//        pr_info("[imoseyon] thermal-engine restarting.\n");
+//    }
 
 	policy->user_policy.max = new_policy.max;
 	new_policy.user_policy.max = new_policy.max;
@@ -573,36 +579,6 @@ static ssize_t store_scaling_max_freq
 
 	return ret ? ret : count;
 }
-#else
-static ssize_t store_scaling_max_freq
-        (struct cpufreq_policy *policy, const char *buf, size_t count)
-{
-        unsigned int ret = -EINVAL;
-        struct cpufreq_policy new_policy;
-
-        ret = cpufreq_get_policy(&new_policy, policy->cpu);
-        if (ret)
-                return -EINVAL;
-
-        ret = sscanf(buf, "%u", &new_policy.max);
-        if (ret != 1)
-                return -EINVAL;
-
-	// restart thermal-engine when something else changes maxfreq
-        if (strcmp(current->comm, "thermal-engine")) {
-		struct task_struct *tsk;
-		for_each_process(tsk)
-		  if (!strcmp(tsk->comm,"thermal-engine")) send_sig(SIGKILL, tsk, 0);
-		pr_info("[imoseyon] thermal-engine restarting.\n");
-	}
-
-        ret = __cpufreq_set_policy(policy, &new_policy);
-        policy->user_policy.max = policy->max;
-
-        return ret ? ret : count;
-}
-//store_one(scaling_max_freq, max);
-#endif /* CONFIG_CPUFREQ_HARDLIMIT */
 
 /**
  * show_cpuinfo_cur_freq - current CPU frequency as detected by hardware
