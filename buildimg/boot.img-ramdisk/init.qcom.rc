@@ -88,6 +88,9 @@ on early-boot
     write /sys/kernel/boot_adsp/boot 1
 
 on boot
+
+    mount debugfs /sys/kernel/debug /sys/kernel/debug
+
     chown bluetooth bluetooth /sys/module/bluetooth_power/parameters/power
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/type
     chown bluetooth bluetooth /sys/class/rfkill/rfkill0/state
@@ -766,8 +769,8 @@ service fm_dl /system/bin/sh /system/etc/init.qcom.fm.sh
     oneshot
 
 on property:crypto.driver.load=1
-     insmod /system/lib/modules/qce.ko
-     insmod /system/lib/modules/qcedev.ko
+     insmod /lib/modules/qce.ko
+     insmod /lib/modules/qcedev.ko
 
 service drmdiag /system/bin/drmdiagapp
     class late_start

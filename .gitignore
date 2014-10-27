@@ -30,6 +30,7 @@ modules.builtin
 *.lzma
 *.xz
 *.lzo
+*.lz4
 *.patch
 *.gcno
 
@@ -82,6 +83,9 @@ GTAGS
 arch/arm/boot/compressed/ashldi3.S
 arch/arm/boot/compressed/piggy.xzkern
 arch/arm/boot/zImage
+
+*.dtb
+*.dts
 
 */zImage
 */*.img
